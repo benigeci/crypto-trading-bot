@@ -1,0 +1,54 @@
+# Environment and secrets
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+data/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups
+backups/
+*.bak
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Charts and exports
+exports/
+charts/
+*.png
+*.jpg
+*.html
+
+# Test outputs
+test_results/

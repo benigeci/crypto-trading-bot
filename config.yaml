@@ -1,0 +1,144 @@
+# Cryptocurrency Trading Bot Configuration
+
+# Symbols to monitor (format: BASE/QUOTE)
+symbols:
+  - BTC/USDT
+  - ETH/USDT
+  - BNB/USDT
+  - SOL/USDT
+  - ADA/USDT
+
+# Data fetching configuration
+data:
+  timeframes:
+    - 1m   # 1 minute
+    - 5m   # 5 minutes
+    - 15m  # 15 minutes
+    - 1h   # 1 hour
+    - 4h   # 4 hours
+    - 1d   # 1 day
+  
+  primary_timeframe: 15m  # Main timeframe for analysis
+  candles_limit: 500      # Number of historical candles to fetch
+  
+  sources:
+    primary: binance      # Primary data source
+    backup: coingecko     # Backup if primary fails
+
+# Technical Analysis Indicators
+indicators:
+  rsi:
+    enabled: true
+    period: 14
+    overbought: 70
+    oversold: 30
+  
+  macd:
+    enabled: true
+    fast_period: 12
+    slow_period: 26
+    signal_period: 9
+  
+  ema:
+    enabled: true
+    periods: [9, 21, 50, 200]
+  
+  bollinger_bands:
+    enabled: true
+    period: 20
+    std_dev: 2
+  
+  volume:
+    enabled: true
+    ma_period: 20
+    spike_threshold: 1.5  # 150% of average volume
+
+# Trading Strategy Configuration
+strategy:
+  name: multi_indicator_confluence
+  
+  # Signal generation rules
+  signals:
+    buy_conditions:
+      min_indicators: 3  # Minimum indicators confirming buy
+      required:
+        - rsi_oversold
+        - macd_bullish_cross
+        - price_above_ema
+    
+    sell_conditions:
+      min_indicators: 3  # Minimum indicators confirming sell
+      required:
+        - rsi_overbought
+        - macd_bearish_cross
+        - price_below_ema
+  
+  # Confirmation requirements
+  confirmation:
+    volume_confirmation: true
+    trend_confirmation: true
+    multiple_timeframes: false  # Multi-timeframe analysis
+
+# Risk Management
+risk:
+  max_positions: 3               # Maximum concurrent positions
+  position_size_percent: 10      # Percentage of portfolio per trade
+  max_portfolio_risk: 20         # Maximum total portfolio at risk
+  
+  stop_loss:
+    enabled: true
+    type: trailing               # fixed or trailing
+    percent: 3                   # 3% stop loss
+  
+  take_profit:
+    enabled: true
+    levels:
+      - percent: 5               # First target: 5%
+        exit_percent: 50         # Exit 50% of position
+      - percent: 10              # Second target: 10%
+        exit_percent: 50         # Exit remaining 50%
+  
+  # Dynamic position sizing based on signal strength
+  dynamic_sizing:
+    enabled: true
+    min_size: 5                  # Minimum 5% of max position
+    max_size: 100                # Maximum 100% of max position
+
+# Backtesting Configuration
+backtest:
+  start_date: "2023-01-01"
+  end_date: "2024-12-31"
+  initial_balance: 10000
+  commission: 0.001              # 0.1% commission per trade
+  slippage: 0.0005              # 0.05% slippage
+
+# Bot Behavior
+bot:
+  update_interval: 300           # Check for signals every 5 minutes
+  auto_trade: false              # Automatic trade execution
+  paper_trading: true            # Paper trading mode
+  
+  notifications:
+    signals: true                # Notify on new signals
+    trades: true                 # Notify on trade execution
+    errors: true                 # Notify on errors
+    daily_summary: true          # Daily performance summary
+  
+  error_handling:
+    max_retries: 3
+    retry_delay: 5               # Seconds
+    auto_recovery: true
+
+# Logging
+logging:
+  level: INFO
+  file: logs/bot.log
+  max_file_size: 10485760        # 10 MB
+  backup_count: 5
+  console_output: true
+
+# Database
+database:
+  path: data/trading_bot.db
+  backup_enabled: true
+  backup_interval: 86400         # Daily backup (seconds)
