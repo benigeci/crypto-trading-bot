@@ -224,3 +224,20 @@ if __name__ == "__main__":
     logger.log_signal('BUY', 'BTC/USDT', 45000.00, {'RSI': 28, 'MACD': 'bullish'}, 85)
     logger.log_trade('BUY', 'BTC/USDT', 45000.00, 0.1, 'Strong buy signal')
     logger.log_performance({'Total Profit': '15.5%', 'Win Rate': '68%', 'Total Trades': 24})
+
+
+# Compatibility function for new modules
+def setup_logger(name='trading_bot', log_dir='logs', log_level='INFO'):
+    """
+    Setup and return a logger instance
+    
+    Args:
+        name: Logger name
+        log_dir: Directory for log files
+        log_level: Logging level
+    
+    Returns:
+        Logger instance
+    """
+    logger_obj = get_logger(log_dir=log_dir, log_level=log_level)
+    return logger_obj.main_logger  # Return the actual logger object

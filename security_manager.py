@@ -11,7 +11,8 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.backends import default_backend
 import secrets
 
 from logger import setup_logger
@@ -103,11 +104,12 @@ class SecurityManager:
         if salt is None:
             salt = os.urandom(16)
         
-        kdf = PBKDF2(
+        kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
             salt=salt,
             iterations=100000,
+            backend=default_backend()
         )
         
         key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
