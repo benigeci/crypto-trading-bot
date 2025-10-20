@@ -1,0 +1,198 @@
+# Enhanced Trading Bot Configuration
+# Production-ready configuration with adaptive strategy and advanced risk management
+
+# Exchange Configuration
+exchange:
+  name: binance                      # Exchange: binance, kraken, coinbasepro
+  testnet: false                     # Use testnet (recommended for initial testing)
+  rate_limit: true                   # Enable rate limiting
+  # API credentials loaded from environment variables:
+  # EXCHANGE_API_KEY, EXCHANGE_API_SECRET
+
+# Trading Configuration
+trading:
+  mode: paper                        # Trading mode: 'paper' or 'live'
+  initial_balance: 10000             # Starting capital (USDT)
+  symbols:                           # Trading pairs
+    - BTC/USDT
+    - ETH/USDT
+  timeframe: 1h                      # Candle timeframe: 1m, 5m, 15m, 1h, 4h, 1d
+  update_interval_seconds: 300       # Update interval (5 minutes)
+  max_positions: 3                   # Maximum concurrent positions
+  position_size_pct: 10.0            # Base position size (% of capital)
+
+# Technical Indicators Configuration
+indicators:
+  adaptive: true                     # Enable adaptive thresholds
+  rsi_oversold: 30                   # RSI oversold threshold (base)
+  rsi_overbought: 70                 # RSI overbought threshold (base)
+  
+  # Component weights for ensemble
+  rsi_weight: 1.0
+  macd_weight: 1.5
+  bb_weight: 1.2                     # Bollinger Bands
+  ema_weight: 1.3
+  volume_weight: 1.0
+  stoch_weight: 0.8                  # Stochastic
+  atr_weight: 0.7
+  
+  # EMA periods
+  ema_fast: 12
+  ema_slow: 26
+  
+  # MACD parameters
+  macd_fast: 12
+  macd_slow: 26
+  macd_signal: 9
+
+# Risk Management Configuration
+risk_management:
+  stop_loss_pct: 2.0                 # Stop-loss percentage
+  take_profit_pct: 4.0               # Take-profit percentage (first level)
+  trailing_stop: true                # Enable trailing stop
+  trailing_stop_pct: 1.0             # Trailing stop distance (%)
+  
+  # Position sizing method: 'fixed', 'kelly', 'volatility'
+  position_sizing_method: volatility
+  
+  kelly_fraction: 0.25               # Kelly Criterion fraction (if kelly method)
+  
+  # Risk limits
+  max_daily_loss_pct: 5.0            # Maximum daily loss before circuit breaker
+  max_drawdown_pct: 20.0             # Maximum drawdown before circuit breaker
+  max_single_loss_pct: 3.0           # Maximum single trade loss
+  
+  # Dynamic position sizing
+  dynamic_sizing: true               # Adjust size based on signal strength
+  volatility_lookback: 20            # Periods for volatility calculation
+
+# Machine Learning Configuration
+ml:
+  enabled: true                      # Enable ML predictions
+  model_type: ensemble               # Model: 'rf', 'xgb', 'ensemble'
+  
+  # Training parameters
+  retrain_interval_hours: 168        # Retrain every week
+  min_training_samples: 500          # Minimum samples for training
+  
+  # Ensemble weights
+  ensemble_weights:
+    random_forest: 0.4
+    xgboost: 0.4
+    technical_score: 0.2
+  
+  # Prediction parameters
+  prediction_confidence_threshold: 0.5  # Minimum confidence to act
+  
+  # Feature engineering
+  use_lagged_features: true          # Use lag features
+  lookback_periods: 20               # Periods for rolling statistics
+  
+  # Model persistence
+  save_models: true                  # Save trained models
+  model_cache_ttl: 300               # Prediction cache TTL (seconds)
+  
+  # Cross-validation
+  use_cross_validation: true
+  cv_folds: 5
+
+# Telegram Configuration
+telegram:
+  enabled: true                      # Enable Telegram notifications
+  # Bot token loaded from environment: TELEGRAM_BOT_TOKEN
+  chat_id: ""                        # Your Telegram chat ID
+  
+  # Notification settings
+  notify_signals: true               # Send trade signal notifications
+  notify_trades: true                # Send trade execution notifications
+  notify_daily_summary: true         # Send daily summary
+  notify_risk_alerts: true           # Send risk alerts
+  
+  # Rate limiting
+  rate_limit_per_user: 10            # Max messages per user per minute
+  allowed_users: []                  # Whitelist (empty = owner only)
+
+# Database Configuration
+database:
+  type: sqlite                       # Database: 'sqlite' or 'postgresql'
+  path: ./data/trading_bot.db        # SQLite database path
+  
+  # PostgreSQL settings (if type: postgresql)
+  # host: localhost
+  # port: 5432
+  # database: trading_bot
+  # user loaded from environment: DB_USER
+  # password loaded from environment: DB_PASSWORD
+  # ssl_mode: require
+  
+  # Database features
+  enable_encryption: false           # Encrypt sensitive data in DB
+  enable_backups: true               # Enable automatic backups
+  backup_interval_hours: 24          # Backup interval
+
+# Logging Configuration
+logging:
+  level: INFO                        # Log level: DEBUG, INFO, WARNING, ERROR
+  log_to_file: true                  # Write logs to file
+  log_file: ./logs/trading_bot.log   # Log file path
+  max_file_size_mb: 10               # Max log file size before rotation
+  backup_count: 5                    # Number of backup log files
+  
+  # Feature logging
+  log_trades: true                   # Log all trades
+  log_signals: true                  # Log all signals
+  log_indicators: false              # Log indicator values (verbose)
+  log_risk_metrics: true             # Log risk metrics
+
+# Backtesting Configuration (Optional)
+backtest:
+  enabled: false                     # Enable backtesting mode
+  data_file: ./data/historical.csv   # Historical data file
+  lookback_days: 365                 # Days of historical data
+  
+  # Walk-forward analysis
+  walk_forward: true
+  train_pct: 70                      # Training data percentage
+  test_pct: 30                       # Testing data percentage
+  
+  # Monte Carlo simulation
+  monte_carlo_simulations: 1000
+  
+  # Costs
+  commission: 0.001                  # 0.1% commission
+  slippage: 0.0005                   # 0.05% slippage
+
+# Advanced Configuration
+advanced:
+  # WebSocket streaming
+  use_websocket: true                # Use WebSocket for real-time data
+  websocket_reconnect_delay: 5       # Reconnect delay (seconds)
+  
+  # Multi-exchange aggregation
+  use_multi_exchange: false          # Aggregate prices from multiple exchanges
+  exchanges_for_aggregation:
+    - binance
+    - kraken
+    - coinbasepro
+  aggregation_method: weighted       # Method: 'mean', 'median', 'weighted'
+  
+  # Performance optimization
+  use_caching: true                  # Cache data and predictions
+  cache_ttl: 300                     # Cache TTL (seconds)
+  parallel_analysis: true            # Analyze symbols in parallel
+  
+  # Security
+  api_key_rotation_days: 90          # Days before API key rotation warning
+  session_timeout: 3600              # Session timeout (seconds)
+  
+  # Circuit breaker
+  circuit_breaker_cooldown: 24       # Hours before circuit breaker resets
+  consecutive_loss_limit: 5          # Consecutive losses before halt
+
+# Environment Variables Required:
+# EXCHANGE_API_KEY=your_api_key
+# EXCHANGE_API_SECRET=your_api_secret
+# TELEGRAM_BOT_TOKEN=your_telegram_token
+# TELEGRAM_CHAT_ID=your_chat_id
+# DB_USER=postgres (if using PostgreSQL)
+# DB_PASSWORD=your_db_password (if using PostgreSQL)
